@@ -1,0 +1,1 @@
+export { QuickStrategy } from './QuickStrategy'
