@@ -18,8 +18,7 @@ export default function App() {
   const { isLoading, isAuthenticated } = useAuth()
   const [activeTab, setActiveTab] = useState('dashboard')
 
-  if (!isInitialized) return <LoadingScreen />
-  if (isLoading) return <LoadingScreen />
+  if (!isInitialized || isLoading) return <LoadingScreen key="loading" />
   if (!isAuthenticated) return <LoginScreen />
 
   const renderContent = () => {
