@@ -34,7 +34,7 @@ export function useAuth() {
             landing_company_name: authData.authorize.landing_company_name,
           }
           setAuth(result.token, accounts, current)
-          window.history.replaceState({}, '', window.location.pathname)
+          window.history.replaceState({}, '', '/')
         } catch (err) {
           console.error('Auth failed:', err)
         }
