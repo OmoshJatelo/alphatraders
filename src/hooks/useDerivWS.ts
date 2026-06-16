@@ -12,7 +12,8 @@ export function useDerivWS() {
 
   const connect = useCallback(async (token: string) => {
     try {
-      await derivService.connect(token)
+      await derivService.connect()
+      await derivService.authorize(token)
       setIsConnected(true)
     } catch {
       setIsConnected(false)

@@ -8,16 +8,12 @@ export class DerivService {
   private pendingRequests: Map<number, { resolve: Function; reject: Function }> = new Map()
   private messageHandler: ((msg: any) => void) | null = null
 
-  connect(token?: string): Promise<void> {
+  connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.ws = new WebSocket(DERIV_WS_URL)
 
       this.ws.onopen = () => {
-        if (token) {
-          this.send({ authorize: token }).then(() => resolve()).catch(reject)
-        } else {
-          resolve()
-        }
+        resolve()
       }
 
       this.ws.onmessage = (event) => {

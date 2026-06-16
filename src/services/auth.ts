@@ -5,7 +5,7 @@ export class AuthService {
   private readonly redirectUri: string
 
   private constructor() {
-    this.redirectUri = `${window.location.origin}/oauth/callback`
+    this.redirectUri = `${window.location.origin}/`
   }
 
   static getInstance(): AuthService {
@@ -19,25 +19,34 @@ export class AuthService {
     return derivService.getAuthUrl(this.redirectUri)
   }
 
-  async handleOAuthCallback(): Promise<{ token: string } | null> {
+  handleOAuthCallback(): { token: string } | null {
     const params = new URLSearchParams(window.location.search)
-    const token = params.get('token1')
-    const acct1 = params.get('acct1')
+    const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'))
+
+    const token = params.get('token1') ?? params.get('token') ?? hashParams.get('token1') ?? hashParams.get('token')
 
     if (token) {
+      localStorage.setItem('deriv_token', token)
+      window.history.replaceState({}, document.title, window.location.origin + window.location.pathname)
       return { token }
+    }
+
+    const stored = localStorage.getItem('deriv_token')
+    if (stored) {
+      return { token: stored }
     }
 
     return null
   }
 
   async authenticateWithToken(token: string) {
-    await derivService.connect(token)
+    await derivService.connect()
     const authResponse = await derivService.authorize(token)
     return authResponse
   }
 
   logout() {
+    localStorage.removeItem('deriv_token')
     derivService.disconnect()
     window.location.href = '/'
   }

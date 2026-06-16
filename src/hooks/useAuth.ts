@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { authService } from '@/services/auth'
 import { useAppStore } from '@/store'
 import type { DerivAccount } from '@/types'
@@ -6,10 +7,11 @@ import type { DerivAccount } from '@/types'
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(true)
   const { setAuth, isAuthenticated, setInitialized } = useAppStore()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleCallback = async () => {
-      const result = await authService.handleOAuthCallback()
+      const result = authService.handleOAuthCallback()
       if (result) {
         try {
           const authData = await authService.authenticateWithToken(result.token)
@@ -34,13 +36,14 @@ export function useAuth() {
             landing_company_name: authData.authorize.landing_company_name,
           }
           setAuth(result.token, accounts, current)
-          window.history.replaceState({}, '', '/')
+          navigate('/', { replace: true })
         } catch (err) {
           console.error('Auth failed:', err)
+          localStorage.removeItem('deriv_token')
         }
       }
-      setIsLoading(false);
-    setInitialized(true);
+      setIsLoading(false)
+      setInitialized(true)
     }
 
     handleCallback()
