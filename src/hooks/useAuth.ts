@@ -5,7 +5,7 @@ import type { DerivAccount } from '@/types'
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(true)
-  const { setAuth, isAuthenticated } = useAppStore()
+  const { setAuth, isAuthenticated, setInitialized } = useAppStore()
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -39,7 +39,8 @@ export function useAuth() {
           console.error('Auth failed:', err)
         }
       }
-      setIsLoading(false)
+      setIsLoading(false);
+    setInitialized(true);
     }
 
     handleCallback()
